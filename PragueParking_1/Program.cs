@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace PragueParking_1
 {
@@ -11,39 +12,17 @@ namespace PragueParking_1
         {
             while (true)
             {
-                Menu.mainMenu();
+                mainMenu();
             }
         }
 
-
-        /*
-         * Fixa alla felmeddelanden - Byt ut "Something went wrong" med ett mer konkret felmeddelande
-         * Fixa Locate-koden - ta bort individuella MCs/Bilar
-         * Kontrollera regnummer för MCs som lagras - 2 MCs skall inte kunna använda samma registreringsnummer
-         * Börja med Collect-koden - Skriv ut ett kvitto till användaren när bilen har hämtats
-         * Fixa input 1 --> 'Back to main menu?', no fungerar inte som den ska
-         * Fixa input 2 --> Fixa for-loop, Flytta mc till plats 20, men MC placeras på plats 19
-         */
-
-
-        /*-----------------------------------------------------------------------------------------------
-
-                                                  DESIGN ÄNDRINGAR
-
-        1. Input 1 --> Car --> Fixa Console.Clear
-        2. Input 1 --> 1 MC --> Fixa Console.Clear
-        3. Input 2 --> Move behöver Console.Clear
-        4. Input 2 --> Move 2 MCs --> Fixa färg + Console.Clear
-        5. 
-
-        -----------------------------------------------------------------------------------------------*/
-
-        public class Menu
-        {
             public static void mainMenu()
             {
                 try
                 {
+
+                // Visar menyn. Här får användarne välja vad de vill göra i menyn
+
                     Console.WriteLine();
                     Console.ForegroundColor = ConsoleColor.Blue;
                     Console.WriteLine("1:Park vehicle\n2:Move vehicle\n3:Check Array\n4:Locate vehicle\n5:Collect vehicle\n0:Quit");
@@ -51,13 +30,13 @@ namespace PragueParking_1
                     Console.WriteLine("-------------------------------------------------------------------------------------------------------------");
                     Console.Write("Input: ");
                     Console.ResetColor();
-                    string search = Console.ReadLine();
+                    string search = Console.ReadLine(); 
                     string parkVehicles;
                     int input = int.Parse(search);
 
-                    switch (input)
+                    switch (input) // Början av min meny 
                     {
-                        case 1:
+                        case 1: // Case 1 - kontrollerar om användaren väljer att parkera en bil eller mc. Det som användaren väljer för antingen ett Car# eller MC# tag framför reg numret
                             Console.Clear();
                             Console.ForegroundColor = ConsoleColor.Blue;
                             Console.WriteLine("1 - Park a car\n" +
@@ -79,9 +58,9 @@ namespace PragueParking_1
                             else
                             {
                                 Console.ForegroundColor = ConsoleColor.Red;
-                                Console.WriteLine("Incorrect input. Returning back to main menu...");
+                                Console.WriteLine("Incorrect input. Returning back to main ..");
                                 Console.ResetColor();
-                                Menu.mainMenu();
+                                mainMenu();
                             }
                             break;
 
@@ -120,16 +99,16 @@ namespace PragueParking_1
                     }
                 }
 
-                catch (FormatException)
+                catch (FormatException) // FormatExceptiopn - Kontrollerar användarens input. Om användaren skriver in ett nummer som inte finns i menyn, då visas felmeddelandet nedan
                 {
                     Console.ForegroundColor = ConsoleColor.Red;
                     Console.WriteLine();
-                    Console.WriteLine("Incorrect format detected in menu. Please enter a number between 0 - 5");
+                    Console.WriteLine("Incorrect format detected in  Please enter a number between 0 - 5");
                     Console.WriteLine();
                     Console.ResetColor();
                 }
             }
-        }
+        
 
         //-----------------------------------------------------------------------------------------------------------------------------------------------------
         //                                                      PARK A CAR CODE
@@ -137,24 +116,24 @@ namespace PragueParking_1
 
         public class Parking
         {
-            public static string TypeOfVehicle(string vehiclePlate, int userInput)
+            public static string TypeOfVehicle(string vehiclePlate, int userInput) 
             {
                 if (userInput == 1)
                 {
-                    vehiclePlate = "Car#" + vehiclePlate;
+                    vehiclePlate = "Car#" + vehiclePlate; // Om användaren vill spara en bil, då sparas car# framför reg numret
                     return vehiclePlate;
                 }
 
                 else if (userInput == 2)
                 {
-                    vehiclePlate = "MC#" + vehiclePlate;
+                    vehiclePlate = "MC#" + vehiclePlate; // Om användaren vill spara en mc, då sparas mc# framför reg numret
                     return vehiclePlate;
                 }
 
                 return vehiclePlate;
             }
 
-            public static string ParkCar(int userInput) 
+            public static string ParkCar(int userInput)
             {
                 string regNmr, backToMenu;
 
@@ -172,47 +151,45 @@ namespace PragueParking_1
                     Console.WriteLine("You need to enter your registration plate!");
                     Console.WriteLine();
                     Console.ResetColor();
-                    Menu.mainMenu();
+                    mainMenu();
                 }
 
-                if (regNmr.Length < 4)
+                if (regNmr.Length < 4) // Kontrollerar användarens reg input. Om det är mindre än 4 tecken, då visas detta felmeddelande
                 {
                     Console.ForegroundColor = ConsoleColor.Red;
                     Console.WriteLine();
                     Console.WriteLine("Registration number too short. Enter between 4-10 characters. Press any key to try again...");
                     Console.WriteLine();
                     Console.ResetColor();
-                    Menu.mainMenu();
+                    mainMenu();
                 }
 
-                else if (regNmr.Length > 10)
+                else if (regNmr.Length > 10) // Kontrollerar användarens reg input. Om det är mer än 10 tecken, då visas detta felmeddelande
                 {
                     Console.ForegroundColor = ConsoleColor.Red;
                     Console.WriteLine();
                     Console.WriteLine("Registration number too long. Enter between 4-10 characters. Press any key to try again...");
                     Console.WriteLine();
                     Console.ResetColor();
-                    Menu.mainMenu();
+                    mainMenu();
                 }
 
-                else if (parkArray.Contains(regNmr))
+                else if (parkArray.Contains(regNmr)) // Om användarens input redan finns i arrayen, då visas detta felmeddelande
                 {
                     Console.ForegroundColor = ConsoleColor.Red;
                     Console.WriteLine("A vehicle with the same registration plate is already here...");
                     Console.WriteLine("Try again by pressing the 'Enter' key");
                     Console.ReadKey();
                     Console.ResetColor();
-                    Menu.mainMenu();
+                    mainMenu();
                 }
 
-                else
-                {
-                    for (int i = 1; i < parkArray.Length; i++)
+                    for (int i = 1; i < parkArray.Length; i++) // Loopar genom arrayen
                     {
                         if (parkArray[i] == null)
                         {
                             parkArray[i] = regNmr;
-                            DateTime Date = DateTime.Now;
+                            DateTime Date = DateTime.Now; // Skapar en variabel som sparar tiden
 
                             Console.ForegroundColor = ConsoleColor.Green;
                             Console.WriteLine();
@@ -224,7 +201,7 @@ namespace PragueParking_1
                     }
 
                     Console.ForegroundColor = ConsoleColor.Blue;
-                    Console.WriteLine("Back to the menu? [y] or [n]?");
+                    Console.WriteLine("Back to the menu? [y] or [n]?"); 
                     Console.ResetColor();
                     Console.WriteLine();
 
@@ -232,7 +209,7 @@ namespace PragueParking_1
 
                     if (backToMenu == "y")
                     {
-                        Menu.mainMenu();
+                        mainMenu();
                         return ParkCar(userInput);
                     }
 
@@ -249,9 +226,8 @@ namespace PragueParking_1
                         Console.WriteLine("Returning to 'Add vehicle' option in the menu");
                         Console.ResetColor();
                     }
-                }
 
-                return ParkCar(userInput);
+                    return ParkCar(userInput);
             }
 
             //-----------------------------------------------------------------------------------------------------------------------------------------------------
@@ -260,7 +236,7 @@ namespace PragueParking_1
 
             public static string ParkMC(int userInput)
             {
-                
+
                 try
                 {
                     string mcInput, backToMenu;
@@ -283,14 +259,14 @@ namespace PragueParking_1
 
                         string newMCPlate = TypeOfVehicle(mcReg1, userInput);
 
-                        if (newMCPlate == "")
+                        if (newMCPlate == "") // Om användarens input är tomt, visas följande felmeddelande
                         {
                             Console.ForegroundColor = ConsoleColor.Red;
                             Console.WriteLine();
                             Console.WriteLine("You need to enter your registration plate!");
                             Console.WriteLine();
                             Console.ResetColor();
-                            Menu.mainMenu();
+                            mainMenu();
                         }
 
                         else if (newMCPlate.Length < 4)
@@ -300,7 +276,7 @@ namespace PragueParking_1
                             Console.WriteLine("Registration number too short. Enter between 4-10 characters. Press any key to try again...");
                             Console.WriteLine();
                             Console.ResetColor();
-                            Menu.mainMenu();
+                            mainMenu();
                         }
 
                         else if (newMCPlate.Length > 10)
@@ -310,7 +286,7 @@ namespace PragueParking_1
                             Console.WriteLine("Registration number too long. Enter between 4-10 characters. Press any key to try again...");
                             Console.WriteLine();
                             Console.ResetColor();
-                            Menu.mainMenu();
+                            mainMenu();
                         }
 
                         else if (parkArray.Contains(newMCPlate))
@@ -318,13 +294,10 @@ namespace PragueParking_1
                             Console.ForegroundColor = ConsoleColor.Red;
                             Console.WriteLine("A vehicle with the same registration plate is already here...");
                             Console.WriteLine("Try again by pressing the 'Enter' key");
-                            Console.ReadKey();
                             Console.ResetColor();
-                            Menu.mainMenu();
+                            mainMenu();
                         }
 
-                        else
-                        {
                             for (int i = 1; i < parkArray.Length; i++)
                             {
                                 if (parkArray[i] == null)
@@ -350,7 +323,7 @@ namespace PragueParking_1
 
                             if (backToMenu == "y")
                             {
-                                Menu.mainMenu();
+                                mainMenu();
                                 return ParkCar(userInput);
                             }
 
@@ -369,12 +342,9 @@ namespace PragueParking_1
                                 Console.WriteLine("Returning to 'Add vehicle' option in the menu");
                                 Console.ResetColor();
                             }
-                        }
-
-
                     }
                     //---------------------------------------------------------------------------------------------------------------------
-                    else if (mcInput == "2")
+                    else if (mcInput == "2") // All kod nedan körs om användaren väljer att spara 2 mcs
                     {
                         Console.WriteLine();
                         Console.ForegroundColor = ConsoleColor.Blue;
@@ -388,10 +358,10 @@ namespace PragueParking_1
                         Console.ResetColor();
                         string newPlate2 = Console.ReadLine();
 
-                        mcReg1 = TypeOfVehicle(newPlate1, userInput);
-                        mcReg2 = TypeOfVehicle(newPlate2, userInput);
+                        mcReg1 = TypeOfVehicle(newPlate1, userInput); // Kontrollerar typen av forden. I detta fall är det mc (MC#)
+                        mcReg2 = TypeOfVehicle(newPlate2, userInput); // Kontrollerar typen av forden. I detta fall är det mc (MC#)
 
-                        string mcRegPlates = mcReg1 + " | " + mcReg2;
+                        string mcRegPlates = mcReg1 + " | " + mcReg2; // Skapar formatet till 2 sparade MCs
 
                         if (mcReg1.Length <= 4)
                         {
@@ -399,7 +369,6 @@ namespace PragueParking_1
                             Console.ForegroundColor = ConsoleColor.Red;
                             Console.WriteLine("The registration number is too short!");
                             Console.ResetColor();
-                            Menu.mainMenu();
                         }
 
                         else if (mcReg1.Length > 10)
@@ -408,28 +377,23 @@ namespace PragueParking_1
                             Console.ForegroundColor = ConsoleColor.Red;
                             Console.WriteLine("The registration number is too Long!");
                             Console.ResetColor();
-                            Menu.mainMenu();
                         }
-
-
-                        for (int i = 1; i < parkArray.Length; i++)
-                        {
-                            if (parkArray[i] == null)
+                            for (int i = 1; i < parkArray.Length; i++)
                             {
-                                parkArray[i] = mcRegPlates;
-                                DateTime Date = DateTime.Now;
+                                if (parkArray[i] == null)
+                                {
+                                    parkArray[i] = mcRegPlates;
+                                    DateTime Date = DateTime.Now;
 
-                                Console.ForegroundColor = ConsoleColor.Green;
-                                Console.WriteLine();
-                                Console.WriteLine("Your MC(s): {0}\nparked on parking spot: P{1}\nMC(s) parked at: {2}", mcRegPlates, " " + i, " " + Date);
-                                Console.WriteLine();
-                                Console.ResetColor();
-                                Menu.mainMenu();
-                                break;
+                                    Console.ForegroundColor = ConsoleColor.Green;
+                                    Console.WriteLine();
+                                    Console.WriteLine("Your MC(s): {0}\nparked on parking spot: P{1}\nMC(s) parked at: {2}", mcRegPlates, " " + i, " " + Date);
+                                    Console.WriteLine();
+                                    Console.ResetColor();
+                                    break;
+                                }
                             }
                         }
-                    }
-
                     else
                     {
                         Console.Clear();
@@ -448,7 +412,7 @@ namespace PragueParking_1
                     Console.WriteLine();
                     Console.ResetColor();
                 }
-
+                mainMenu();
                 return ParkMC(userInput);
             }
 
@@ -456,7 +420,7 @@ namespace PragueParking_1
             //                                                      MOVE VEHICLE CODE
             //-----------------------------------------------------------------------------------------------------------------------------------------------------
 
-            public static string MoveVehicle() //TODO: Skapa en submeny
+            public static string MoveVehicle() 
             {
                 try
                 {
@@ -465,21 +429,21 @@ namespace PragueParking_1
                     Console.ResetColor();
                     string vehiclePlate = Console.ReadLine().ToLower();
 
-                    if(vehiclePlate == "car")
+                    if (vehiclePlate == "car") // All kod körs nedan om användaren vill flytta på en bil
                     {
                         Console.ForegroundColor = ConsoleColor.Blue;
                         Console.WriteLine("Enter your registration plate number: ");
                         Console.ResetColor();
                         vehiclePlate = Console.ReadLine();
 
-                        for(int i = 0; i < parkArray.Length; i++)
+                        for (int i = 0; i < parkArray.Length; i++)
                         {
-                            if(parkArray[i] == null)
+                            if (parkArray[i] == null) // Kontrollerar ifall arrayen är tom
                             {
                                 continue;
                             }
 
-                            if(parkArray[i].Contains(vehiclePlate))
+                            if (parkArray[i].Contains(vehiclePlate)) // Kollar vart reg numret är sparad i arrayen
                             {
                                 Console.ForegroundColor = ConsoleColor.Green;
                                 Console.WriteLine();
@@ -495,21 +459,20 @@ namespace PragueParking_1
                                 int moveVehicle = int.Parse(Console.ReadLine());
                                 string moveRegPlate = FindVehicleParkedOnSpot(vehiclePlate);
 
-                                if(moveRegPlate.Contains("Car#"))
+                                if (moveRegPlate.Contains("Car#")) // Kontrollerar om reg numret är en bil eller mc
                                 {
-                                    if(parkArray[moveVehicle - 1] == null)
+                                    if (parkArray[moveVehicle - 1] == null) // Flyttar bilen och ger förra indexen värdet null
                                     {
-                                        parkArray[moveVehicle] = parkArray[i];
+                                        parkArray[moveVehicle] = parkArray[i]; // Sparar den nya positionen i arrayen som bilen har flyttats till
                                         parkArray[i] = null;
                                         Console.ForegroundColor = ConsoleColor.Green;
                                         Console.WriteLine("Vehicle with registration plate: {0} has been moved to spot {1} ", vehiclePlate, moveVehicle);
                                         Console.ResetColor();
-                                        Menu.mainMenu();
-                                        Console.ReadKey();
+                                        mainMenu();
                                         break;
                                     }
 
-                                    else if(parkArray[moveVehicle - 1] != parkArray[i])
+                                    else if (parkArray[moveVehicle - 1] != parkArray[i]) // Kontrollerar platsen dit du vill flytta bilen. Om platsen är upptagen, visa följande felmeddelande
                                     {
                                         Console.ForegroundColor = ConsoleColor.Red;
                                         Console.WriteLine();
@@ -524,7 +487,7 @@ namespace PragueParking_1
                         }
                     }
 
-                    if(vehiclePlate == "mc")
+                    if (vehiclePlate == "mc") // All kod nedan körs om användaren vill spara en eller två MCs
                     {
                         int mcAmount;
                         Console.ForegroundColor = ConsoleColor.Blue;
@@ -532,7 +495,7 @@ namespace PragueParking_1
                         Console.ResetColor();
                         mcAmount = int.Parse(Console.ReadLine());
 
-                        if(mcAmount == 1)
+                        if (mcAmount == 1)
                         {
                             Console.WriteLine();
                             Console.ForegroundColor = ConsoleColor.Blue;
@@ -547,7 +510,7 @@ namespace PragueParking_1
                                     continue;
                                 }
 
-                                if (parkArray[i].Contains(vehiclePlate))
+                                else if (parkArray[i].Contains(vehiclePlate))
                                 {
                                     Console.ForegroundColor = ConsoleColor.Green;
                                     Console.WriteLine();
@@ -562,38 +525,62 @@ namespace PragueParking_1
 
                                     int moveVehicle = int.Parse(Console.ReadLine());
                                     string moveRegPlate = FindVehicleParkedOnSpot(vehiclePlate);
+                                    int mySpot = VehicleLocation(vehiclePlate);
 
-                                    if (moveRegPlate.Contains("MC#"))
+                                    //kontrollera om det är en mc
+
+
+                                    if (moveRegPlate.Contains("|") && parkArray[moveVehicle] == null) // Kontrollerar tecknet som skiljer 2 MCs med varandra " | "
                                     {
-                                    
-                                    if (parkArray[moveVehicle - 1] == null)
-                                    {
-                                        parkArray[moveVehicle] = parkArray[i];
-                                        parkArray[i] = null;
-                                        Console.ForegroundColor = ConsoleColor.Green;
-                                        Console.WriteLine();
-                                        Console.WriteLine("Vehicle with registration plate: {0} has been moved to spot {1} ", vehiclePlate, moveVehicle);
-                                        Menu.mainMenu();
-                                        Console.ReadKey();
-                                        break;
+                                        string[] vehicle = moveRegPlate.Split(" | "); // Splittar på de två MCs parkerade på samma plats och sparar de två Mcs i en sträng array
+
+                                        if (vehicle[0] == "MC#" + vehiclePlate) // Kollar om det användaren skrev in är en MC
+                                        {
+                                            parkArray[mySpot] = vehicle[1]; // Flyttar på den MC som användaren skrev in, men håller kvar den andra MCn
+                                            parkArray[moveVehicle] = vehicle[0];
+                                            Console.ForegroundColor = ConsoleColor.Green;
+                                            Console.WriteLine("Vehicle {0} is moved to spot {1}", vehiclePlate, i);
+                                            Console.ResetColor();
+                                        }
+                                        
+                                        else if (vehicle[1] == "MC#" + vehiclePlate) // Kollar om reg numret har MC# tag framför
+                                        {
+                                            parkArray[mySpot] = vehicle[0];
+                                            parkArray[moveVehicle] = vehicle[1];
+                                            Console.ForegroundColor = ConsoleColor.Green;
+                                            Console.WriteLine("Vehicle {0} is moved to spot {1}", vehiclePlate, i);
+                                            Console.ResetColor();
+                                        }
+
+                                        mainMenu();
                                     }
 
-                                    else if (parkArray[moveVehicle - 1] != parkArray[i])
+                                    else
                                     {
-                                        Console.ForegroundColor = ConsoleColor.Red;
-                                        Console.WriteLine();
-                                        Console.WriteLine("A vehicle with registration plate: {0} is already parked on this spot...", parkArray[moveVehicle - 1]);
-                                        Console.WriteLine();
-                                        Console.ResetColor();
-                                        Console.ReadLine();
-                                        break;
+                                        string[] vehicle = moveRegPlate.Split(" | "); // Splittar MCn igen
+                                        if (vehicle[0] == "MC#" + vehiclePlate)
+                                        {
+                                            parkArray[mySpot] = vehicle[1];
+                                            parkArray[moveVehicle] = vehicle[0];
+                                            Console.ForegroundColor = ConsoleColor.Green;
+                                            Console.WriteLine("Vehicle {0} is moved to spot {1}", vehiclePlate, i);
+                                            Console.ResetColor();
+                                        }
+                                        else if (vehicle[1] == "MC#" + vehiclePlate)
+                                        {
+                                            parkArray[mySpot] = vehicle[0];
+                                            parkArray[moveVehicle] = vehicle[1];
+                                            Console.ForegroundColor = ConsoleColor.Green;
+                                            Console.WriteLine("Vehicle {0} is moved to spot {1}", vehiclePlate, i);
+                                            Console.ResetColor();
+                                        }
                                     }
                                 }
                             }
                         }
-                    }
+                    
 
-                        else if (mcAmount == 2) // ----------------------------------------------------------------------------------------------------  MOVE 2
+                        else if (mcAmount == 2) // Kod körs om användaren vill flytta på 2 MCs
                         {
                             Console.Clear();
                             Console.ForegroundColor = ConsoleColor.Blue;
@@ -629,14 +616,14 @@ namespace PragueParking_1
 
                                     if (moveRegPlate.Contains("MC#"))
                                     {
-                                        if (parkArray[moveMC1 - 1] == null)
+                                        if (parkArray[moveMC1 - 1] == null) // Nollställer platsen
                                         {
                                             parkArray[moveMC1] = parkArray[i];
                                             parkArray[i] = null;
                                             Console.ForegroundColor = ConsoleColor.Green;
                                             Console.WriteLine("Your MC, {0} and {1} are moved to spot {2}", vehiclePlate, vehiclePlate2, moveMC1);
                                             Console.ResetColor();
-                                            Menu.mainMenu();
+                                            mainMenu();
                                             Console.ReadKey();
                                             break;
                                         }
@@ -661,7 +648,7 @@ namespace PragueParking_1
                                             Console.ForegroundColor = ConsoleColor.Green;
                                             Console.WriteLine("MCs: {0} and {1} have been moved to spot {2}", vehiclePlate, vehiclePlate2, moveMC1);
                                             Console.ResetColor();
-                                            Menu.mainMenu();
+                                            mainMenu();
                                             Console.ReadLine();
                                             break;
                                         }
@@ -692,8 +679,6 @@ namespace PragueParking_1
                                 }
                             }
                         }
-                    
-
                         else
                         {
                             Console.Clear();
@@ -714,21 +699,20 @@ namespace PragueParking_1
                 return MoveVehicle();
             }
 
-            public static string FindVehicleParkedOnSpot(string vehiclePlate)        //Fungerar
+            public static string FindVehicleParkedOnSpot(string vehiclePlate)       
             {
                 /*
-                * Metod för att for-loopa igenom parkeringslistan - returnerar regnr på parkerad bil på specifik plats.
-                * if (parkingList.Contains("CAR@" + vehiclePlate) || parkingList.Contains("MC@" + vehiclePlate))
-                */
+                 * Metod som kontrollerar vart fordon är parkerade
+                 */
 
-                for (int i = 0; i < parkArray.Length; i++)
+                for (int i = 0; i < parkArray.Length; i++) // Loopar genom arrayen
                 {
-                    if (parkArray[i] == null)
+                    if (parkArray[i] == null) // Kollar om arrayen är tom
                     {
                         continue;
                     }
-                    
-                    if (parkArray[i].Contains(vehiclePlate))
+
+                    if (parkArray[i].Contains(vehiclePlate)) // Kollar om reg numret redan finns
                     {
                         string returnedPlate = parkArray[i];
                         return returnedPlate;
@@ -741,7 +725,7 @@ namespace PragueParking_1
             //                                                      PRINT OUT ARRAY CODE
             //-----------------------------------------------------------------------------------------------------------------------------------------------------
 
-            public static void PrintArray()
+            public static void PrintArray() // Design 
             {
                 int cols = 6;
                 int rows = 1;
@@ -779,7 +763,7 @@ namespace PragueParking_1
                 Console.WriteLine("---------------------------------------------------------------------------");
                 Console.ResetColor();
                 Console.ReadKey();
-                Menu.mainMenu();
+                mainMenu();
             }
 
         }
@@ -788,9 +772,7 @@ namespace PragueParking_1
         //                                                      COLLECT VEHICLE CODE
         //-----------------------------------------------------------------------------------------------------------------------------------------------------
 
-        // FIXA TYPE OF VEHICLE --> Förtillfället visas det som 0
-
-        public static string CollectVehicle() 
+        public static string CollectVehicle() // Kod för att hämta ut ett fordon
         {
             int userInput = 0;
             Console.ForegroundColor = ConsoleColor.Blue;
@@ -801,14 +783,16 @@ namespace PragueParking_1
             {
                 string vehiclePlate = Console.ReadLine().ToLower();
 
-                if(SearchVehicle(vehiclePlate))
+                if (SearchVehicle(vehiclePlate)) // Anropar metoden SearchVehicles för att se om fordonet redan finns
                 {
                     Console.Clear();
 
-                    int index = VehicleLocation(vehiclePlate);
+                    int index = VehicleLocation(vehiclePlate); // Anropar metoden VehicleLocation för att se om reg numret har taggen car# eller mc#
 
-                    if(parkArray[index].Contains("|"))
+                    if (parkArray[index].Contains("|")) // Kollar om dubbel MC har en separator 
                     {
+                        string type = "MC";
+
                         DateTime checkOut = DateTime.Now;
                         string vehType = Parking.TypeOfVehicle(vehiclePlate, userInput);
 
@@ -821,7 +805,7 @@ namespace PragueParking_1
                         Console.WriteLine();
                         Console.WriteLine("Registration number: {0}", vehiclePlate);
                         Console.WriteLine();
-                        Console.WriteLine("Type: {0}", userInput);
+                        Console.WriteLine("Type: {0}", type);
                         Console.WriteLine();
                         Console.WriteLine("Date: {0}", checkOut);
                         Console.WriteLine();
@@ -829,13 +813,14 @@ namespace PragueParking_1
 
                         parkArray[index] = parkArray[index].Replace("MC#" + vehiclePlate, "");
                         parkArray[index] = parkArray[index].Replace("|", "");
-                        Menu.mainMenu();
+                        mainMenu();
                     }
 
                     else
                     {
                         DateTime checkOut = DateTime.Now;
                         string vehType = Parking.TypeOfVehicle(vehiclePlate, userInput);
+                        string type = "Car";
 
                         Console.ForegroundColor = ConsoleColor.Blue;
                         Console.WriteLine("Vehicle checked out");
@@ -846,14 +831,14 @@ namespace PragueParking_1
                         Console.WriteLine();
                         Console.WriteLine("Registration number: {0}", vehiclePlate);
                         Console.WriteLine();
-                        Console.WriteLine("Type: {0}", userInput);
+                        Console.WriteLine("Type: {0}", type);
                         Console.WriteLine();
                         Console.WriteLine("Date: {0}", checkOut);
                         Console.WriteLine();
                         Console.ResetColor();
 
                         parkArray[index] = null;
-                        Menu.mainMenu();
+                        mainMenu();
                     }
                 }
 
@@ -879,7 +864,7 @@ namespace PragueParking_1
         //                                                      LOCATE VEHICLE CODE
         //-----------------------------------------------------------------------------------------------------------------------------------------------------
 
-        public static string SearchVehicle() 
+        public static string SearchVehicle() // Metod SearchVehicle
         {
             try
             {
@@ -888,16 +873,16 @@ namespace PragueParking_1
                 Console.ResetColor();
                 string vehiclePlate = Console.ReadLine().ToLower();
 
-                int index = VehicleLocation(vehiclePlate);
+                int index = VehicleLocation(vehiclePlate); // Visar användaren vilken position fordonet ligger på
 
-                if(SearchVehicle(vehiclePlate))
+                if (SearchVehicle(vehiclePlate))
                 {
                     Console.Clear();
                     Console.ForegroundColor = ConsoleColor.Green;
                     Console.WriteLine("Your vehicle {0}, is parked on spot {1}", vehiclePlate, index);
                     Console.WriteLine();
                     Console.ResetColor();
-                    Menu.mainMenu();
+                    mainMenu();
                 }
 
                 else
@@ -907,8 +892,8 @@ namespace PragueParking_1
                     Console.ResetColor();
                 }
             }
-            
-            catch(NullReferenceException e)
+
+            catch (NullReferenceException e)
             {
                 Console.Clear();
                 Console.ForegroundColor = ConsoleColor.Red;
@@ -927,7 +912,7 @@ namespace PragueParking_1
             return SearchVehicle();
         }
 
-        static bool SearchVehicle(string vehiclePlate)
+        static bool SearchVehicle(string vehiclePlate) // Denna motod anropas när användaren söker efter sitt fordon
         {
             vehiclePlate.ToUpper();
 
@@ -941,11 +926,11 @@ namespace PragueParking_1
             return false;
         }
 
-        public static int VehicleLocation(string vehiclePlate)
+        public static int VehicleLocation(string vehiclePlate) // Denna metod anropas när användaren vill veta vilken parkeringsplats fordonet är parkerat på
         {
             vehiclePlate.ToLower();
 
-            for(int i = 1; i < parkArray.Length; i++)
+            for (int i = 1; i < parkArray.Length; i++)
             {
                 if (parkArray[i] != null && parkArray[i].Contains(vehiclePlate))
                 {
